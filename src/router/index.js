@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Balmostory from '../views/BalmostoryView.vue';
+import Inputv from '../views/InputvView.vue';
 import HomeView from '../views/HomeView.vue';
 import AboutViewCopy from '../views/AboutViewCopy.vue';
 
@@ -7,6 +9,16 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
+  },
+  {
+    path: '/Inputv',
+    name: 'Inputv',
+    component: Inputv,
+  },
+  {
+    path: '/Balmostory',
+    name: 'Balmostory',
+    component: Balmostory,
   },
   {
     path: '/AboutViewCopy',
