@@ -1,7 +1,14 @@
+<script setup>
+ const greetingMessage = 'Hello World';
+ const number = 12341234;
+</script>
+
 <template>
   <div>
     <p>{{ title }}</p>
-    <slot name="first" :homes="home"></slot>
+    <div>
+      <slot name="first" :text="greetingMessage" :count="number"></slot>
+    </div>
     <p>{{ name }}</p>
     <slot></slot>
     <br>
@@ -12,14 +19,16 @@
 <script>
   export default {
     props:{
-        title:{
-            type:String,
-            default : "delfault title",
-            required:false
-        }
+      title:{
+          type:String,
+          default : "delfault title",
+          required:false
+      }
     },
     data() {
-      return {name : 'balmostory'}
+      return {
+        name : 'balmostory'
+      }
     },
     methods : {
       updateName() {

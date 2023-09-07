@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Balmostory from '../views/BalmostoryView.vue';
 import Inputv from '../views/InputvView.vue';
+import Todos from '../views/TodosView.vue';
 import HomeView from '../views/HomeView.vue';
 import AboutViewCopy from '../views/AboutViewCopy.vue';
+
+const About = () => {
+  return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+}
 
 const routes = [
   {
@@ -14,6 +19,11 @@ const routes = [
     path: '/Inputv',
     name: 'Inputv',
     component: Inputv,
+  },
+  {
+    path: '/Todos',
+    name: 'Todos',
+    component: Todos,
   },
   {
     path: '/Balmostory',
@@ -31,7 +41,8 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    // component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    component: About
   },
 ];
 

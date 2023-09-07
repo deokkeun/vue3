@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>this is Home page</h1>
-    <p>{{name1}}</p>
+    <p>{{name}}</p>
     <form action=""> 
-      <Inputv v-model="name1" />
+      <Inputv v-model="name" />
     </form>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default{
   },
   data(){
    return{
-     name1:'kk'
+     name:'Kim'
     }
   }
 }

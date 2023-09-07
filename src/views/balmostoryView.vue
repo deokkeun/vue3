@@ -3,7 +3,7 @@
     <h1>this is Home page</h1>
     <p>{{name}}</p>
     <Balmostory title="Home">
-      <template v-slot:first="Home">첫번째 slot {{ Home }}</template>
+      <template #first="slotProps">첫번째 slot {{ slotProps.text }} {{ slotProps.count }}</template>
       <template v-slot:default>두번째 slot</template>
     </Balmostory>
   </div>

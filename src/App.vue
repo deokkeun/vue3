@@ -3,6 +3,8 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/balmostory">balmostory</router-link> |
     <router-link to="/Inputv">inputv</router-link> |
+    <router-link to="/Todos">Todos</router-link> |
+    <button @click="this.$router.push({ name: 'about', params: {productId: 'P0001'} })">about $router.push</button>
     <router-link to="/about">About</router-link> |
     <router-link to="/AboutViewCopy">AboutViewCopy</router-link>
   </nav>
