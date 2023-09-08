@@ -2,10 +2,16 @@
   <div>
     TodosView <br/>
     {{ userId }}<br/>
+    {{ id }}<br/>
     {{ title }} <br/>
+    {{ completed }} <br/>
     ---------------------------------------------------
     <!-- 1개일 경우 v-model="title" -->
-    <Jsonplaceholder v-model:titleValue="title" v-model:userIdValue="userId"></Jsonplaceholder>
+    <Jsonplaceholder v-model:userIdValue="userId"
+                    v-model:idValue="id"
+                    v-model:titleValue="title"
+                    v-model:completedValue="completed">
+    </Jsonplaceholder>
   </div>
 </template>
 
@@ -18,8 +24,10 @@ export default{
   },
   data() {
     return {
-      title: 'default Title',
-      userId: 'default UserId'
+      title: '제목',
+      userId: 11,
+      id: 201,
+      completed: "true"
     }
   }
 }
