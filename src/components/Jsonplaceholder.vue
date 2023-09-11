@@ -36,7 +36,14 @@
       <tr v-for="(user, index) in users">
         <td>{{ user.userId }}</td>
         <td>
-          <input type="checkBox" @click="select = index + 1">
+          <input type="checkBox" 
+            @click="checked(index,$event)">
+          <!-- <input type=“checkbox”
+                    :id=“item.no”
+                    v-model=“prodArr”
+                    :value=“item.name”
+                    :class=“checked(item.name)”
+                /> -->
           {{ user.id }}
         </td>
         <td>{{ user.title }}</td>
@@ -75,12 +82,45 @@
     },
     data() {
       return {
+        checkedCount: 0,
+        userIdValue: 0,
+        idValue: 0,
+        titleValue: "",
+        completedValue: "",
         result: 'N',
         users: [],
         select: 0
       }
     },
     methods: {
+      // checked(target) {
+      //   // prodArr에 해당 값이 포함되어있는지 확인하여 checked라는 클래스를 동적으로 부여한다.
+      //   const index = this.prodArr.indexOf(target)
+      //   return index >= 0 ? { checked: true } : { checked: false }
+      // }
+      checked(target,event) {
+        // target + 1 이 게시글 번호
+        if(this.checkedCount > 0) {
+          console.log(event);
+          event.checked = false;
+          alert("1개만 선택해주세요");
+        } else {
+          this.checkedCount += 1;
+          this.select = target + 1;
+          this.userIdValue = this.users[target].userId;
+          this.idValue = this.users[target].id;
+          this.titleValue = this.users[target].title;
+          this.completedValue = this.users[target].completed;
+  
+          console.log(this.users[target]);
+          console.log("userIdValue = " + this.userIdValue);
+          console.log("this.users[target].userId" + this.users[target].userId);
+  
+          // const index = this.select.indexOf(target)
+          // console.log(index);
+          
+        }
+      }, 
 
       // 참고자료
       // https://veneas.tistory.com/entry/axiosjs-GET-POST-%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EC%84%9C%EB%B2%84%EC%99%80-%ED%86%B5%EC%8B%A0%ED%95%98%EA%B8%B0
@@ -171,51 +211,18 @@
         // 하지만 POST는 서버에 데이터를 새로 입력하여 등록한다면 PUT은 기존 데이터를 수정 할 수 있다.
         // 첫번째 parameter에는 axios에 전달할 서버의 url, 두번째 parameter에는 수정할 데이터가 들어간다.
         // 마찬가지로 세번째 parameter에는 선택적으로 config 객체를 추가할 수 있다.
-        console.log("putData");
-        
-        let saveData = {};
-        saveData.userId = this.userIdValue;
-        saveData.id = this.idValue;
-        saveData.title = this.titleValue;
-        saveData.completed = this.completedValue;
-        console.log(saveData);
-
-        let number = "1";
-        let putData = {};
-        putData.updateTitle = "updateTitle";
-        putData.updateUserId = "updateUserId";
-
-        axios.put(HOST + "/api/putData" + number, JSON.stringify(putData))
-          .then((res) => {
-            console.log(res);
-            console.log(res.data);
-            console.log(res.status);
-          })
-          .catch((error) => {
-            console.log(error);
-          })
-          .finally(() => {
-            console.log("putData finally");
-          })
-      },
-      async deleteData() {
-        // axios를 사용하면서 주의할 점이 있다. 
-        // 이는 axios가 Promise 기반의 자바스크립트 비동기 처리방식을 사용한다는 것이다. 
-        // 이때의 문제점은 처리 순서를 지정하지 않으면 request 요청을 보내고 나서 
-        // response로 응답도 받기 전에 바로 다음 구문을 수행해 버리기 때문에 원하는 결과를 받아오지 못한다는 점이다. 
-        // 실제로 이 때문에 프로젝트를 진행하며 오랜 시간을 헤맸다. 
-        // 해결방법은 async/await를 사용하여 처리 순서를 지정해주는 것이다.
-        try {
-          // axios.delete를 사용하여 데이터를 삭제할 수 도 있다. 
-          // 첫번째 parameter에는 앞에서도 그러하듯 axios에 전달할 서버의 url이 들어간다. 
-          // 보통 삭제할 경우에 참고할 점은 url의 마지막에는 삭제할 객체를 구분할 수 있는 key가 들어간다.
-          // 하지만 필요에 의해서 data 파라미터가 들어갈 일이 있다면, 
-          // 두번째 parameter에 {data: {프로퍼티 : n}} 와 같은 형식으로 사용할 수는 있다.
-          console.log("deleteData");
-          
-          let deleteKey = this.select;
-          console.log("deleteKey" + deleteKey);
-          this.users = await axios.delete(HOST + "/" + deleteKey)
+        if(this.select != 0) {
+          console.log("putData");
+  
+          let number = this.select;
+          let putData = {};
+          putData.userId = this.userIdValue;
+          putData.id = this.idValue;
+          putData.title = this.titleValue;
+          putData.completed = this.completedValue;
+          console.log(putData);
+  
+          axios.put(HOST + "/" + number, JSON.stringify(putData))
             .then((res) => {
               console.log(res);
               console.log(res.data);
@@ -225,14 +232,73 @@
               console.log(error);
             })
             .finally(() => {
-              console.log("deleteData finally");
+              console.log("putData finally");
             })
-
-        } catch(error) {
-          console.log(error);
+        } else {
+          alert("수정하려는 목록을 체크해주세요");
         }
+      },
+      deleteData() {
+        // axios.delete를 사용하여 데이터를 삭제할 수 도 있다. 
+        // 첫번째 parameter에는 앞에서도 그러하듯 axios에 전달할 서버의 url이 들어간다. 
+        // 보통 삭제할 경우에 참고할 점은 url의 마지막에는 삭제할 객체를 구분할 수 있는 key가 들어간다.
+        // 하지만 필요에 의해서 data 파라미터가 들어갈 일이 있다면, 
+        // 두번째 parameter에 {data: {프로퍼티 : n}} 와 같은 형식으로 사용할 수는 있다.
+        console.log("deleteData");
+        
+        let deleteKey = this.select;
+        console.log("deleteKey" + deleteKey);
+        axios.delete(HOST + "/" + deleteKey)
+          .then((res) => {
+            console.log(res);
+            console.log(res.data);
+            console.log(res.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => {
+            console.log("deleteData finally");
+          })
+
 
       }
+      // async, await(try, catch) 사용 예시
+      // async deleteData() {
+      //   // axios를 사용하면서 주의할 점이 있다. 
+      //   // 이는 axios가 Promise 기반의 자바스크립트 비동기 처리방식을 사용한다는 것이다. 
+      //   // 이때의 문제점은 처리 순서를 지정하지 않으면 request 요청을 보내고 나서 
+      //   // response로 응답도 받기 전에 바로 다음 구문을 수행해 버리기 때문에 원하는 결과를 받아오지 못한다는 점이다. 
+      //   // 실제로 이 때문에 프로젝트를 진행하며 오랜 시간을 헤맸다. 
+      //   // 해결방법은 async/await를 사용하여 처리 순서를 지정해주는 것이다.
+      //   try {
+      //     // axios.delete를 사용하여 데이터를 삭제할 수 도 있다. 
+      //     // 첫번째 parameter에는 앞에서도 그러하듯 axios에 전달할 서버의 url이 들어간다. 
+      //     // 보통 삭제할 경우에 참고할 점은 url의 마지막에는 삭제할 객체를 구분할 수 있는 key가 들어간다.
+      //     // 하지만 필요에 의해서 data 파라미터가 들어갈 일이 있다면, 
+      //     // 두번째 parameter에 {data: {프로퍼티 : n}} 와 같은 형식으로 사용할 수는 있다.
+      //     console.log("deleteData");
+          
+      //     let deleteKey = this.select;
+      //     console.log("deleteKey" + deleteKey);
+      //     this.users = await axios.delete(HOST + "/" + deleteKey)
+      //       .then((res) => {
+      //         console.log(res);
+      //         console.log(res.data);
+      //         console.log(res.status);
+      //       })
+      //       .catch((error) => {
+      //         console.log(error);
+      //       })
+      //       .finally(() => {
+      //         console.log("deleteData finally");
+      //       })
+
+      //   } catch(error) {
+      //     console.log(error);
+      //   }
+
+      // }
     }
   };
 </script>

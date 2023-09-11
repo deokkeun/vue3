@@ -1,10 +1,10 @@
 <template>
   <div>
     TodosView <br/>
-    {{ userId }}<br/>
-    {{ id }}<br/>
-    {{ title }} <br/>
-    {{ completed }} <br/>
+    userId : {{ userId }}<br/>
+    id : {{ id }}<br/>
+    title : {{ title }} <br/>
+    completed : {{ completed }} <br/>
     ---------------------------------------------------
     <!-- 1개일 경우 v-model="title" -->
     <Jsonplaceholder v-model:userIdValue="userId"
