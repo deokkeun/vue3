@@ -5,7 +5,9 @@
     id : {{ id }}<br/>
     title : {{ title }} <br/>
     completed : {{ completed }} <br/>
-    ---------------------------------------------------
+    TodosView.vue(부모) <br/>
+    --------------------------------------------------- <br/>
+    Jsonplaceholder.vue(자식) <br/>
     <!-- 1개일 경우 v-model="title" -->
     <Jsonplaceholder v-model:userIdValue="userId"
                     v-model:idValue="id"
@@ -24,10 +26,10 @@ export default{
   },
   data() {
     return {
-      title: '제목',
-      userId: 11,
-      id: 201,
-      completed: "true"
+      title: 'parentTitle',
+      userId: 0,
+      id: 0,
+      completed: false
     }
   }
 }

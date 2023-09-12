@@ -6,16 +6,16 @@
           @input="$emit('update:modelValue', $event.target.value)"> -->
   <input type="text"
           :value="userIdValue"
-          @input="$emit('update:userIdValue', $event.target.value)">
+          @input="$emit('update:userIdValue', Number($event.target.value))">
   <input type="text"
           :value="idValue"
-          @input="$emit('update:idValue', $event.target.value)">
+          @input="$emit('update:idValue', Number($event.target.value))">
   <input type="text"
           :value="titleValue"
           @input="$emit('update:titleValue', $event.target.value)">
   <input type="text"
           :value="completedValue"
-          @input="$emit('update:completedValue', $event.target.value)">
+          @input="$emit('update:completedValue', Boolean($event.target.value))">
   <br/>
   <button @click="postData">Save</button>
   <button @click="putData">Update</button>
@@ -38,12 +38,6 @@
         <td>
           <input type="checkBox" 
             @click="checked(index,$event)">
-          <!-- <input type=“checkbox”
-                    :id=“item.no”
-                    v-model=“prodArr”
-                    :value=“item.name”
-                    :class=“checked(item.name)”
-                /> -->
           {{ user.id }}
         </td>
         <td>{{ user.title }}</td>
@@ -54,7 +48,7 @@
 </template>
 
 <!-- methods: 사용 안하고
-  바로 정보 불러오고 싶을때는 created: {}, setup() -->
+  바로 정보 불러오고 싶을때는 created: {}(계산된 값), setup() -->
 <script>
   import axios from 'axios';
 
@@ -76,41 +70,40 @@
         required: true
       },
       completedValue: {
-        type: String,
+        type: Boolean,
         required: true
       }
     },
     data() {
       return {
+        dataLength: 0,
         checkedCount: 0,
-        userIdValue: 0,
-        idValue: 0,
-        titleValue: "",
-        completedValue: "",
         result: 'N',
         users: [],
         select: 0
       }
     },
     methods: {
-      // checked(target) {
-      //   // prodArr에 해당 값이 포함되어있는지 확인하여 checked라는 클래스를 동적으로 부여한다.
-      //   const index = this.prodArr.indexOf(target)
-      //   return index >= 0 ? { checked: true } : { checked: false }
-      // }
       checked(target,event) {
-        // target + 1 이 게시글 번호
-        if(this.checkedCount > 0) {
-          console.log(event);
-          event.checked = false;
-          alert("1개만 선택해주세요");
-        } else {
+        if(event.target.checked) {
           this.checkedCount += 1;
+          console.log("count : " + this.checkedCount);
+        } else {
+          this.checkedCount -= 1;
+          console.log("count : " + this.checkedCount);
+        }
+        if(this.checkedCount > 1) {
+          this.checkedCount -= 1;
+          console.log("count : " + this.checkedCount);
+          console.log(event.target.checked);
+          event.target.checked = false;
+          alert("1개만 선택 해주세요.");
+        } else {
           this.select = target + 1;
-          this.userIdValue = this.users[target].userId;
-          this.idValue = this.users[target].id;
-          this.titleValue = this.users[target].title;
-          this.completedValue = this.users[target].completed;
+          this.$emit('update:userIdValue', this.users[target].userId);
+          this.$emit('update:idValue', this.users[target].id);
+          this.$emit('update:titleValue', this.users[target].title);
+          this.$emit('update:completedValue', this.users[target].completed);
   
           console.log(this.users[target]);
           console.log("userIdValue = " + this.userIdValue);
@@ -118,7 +111,6 @@
   
           // const index = this.select.indexOf(target)
           // console.log(index);
-          
         }
       }, 
 
@@ -168,8 +160,10 @@
           console.log("응답 데이터 : " + JSON.stringify(response.data));
           this.users = response.data;
           this.result = "Y"
+          this.dataLength = response.data.length;
+          console.log(response.data.length);
           // console.log(response.data) // 서버가 제공한 응답(데이터)
-          // console.log(response.status) // `status`는 서버 응답의 HTTP 상태 코드
+          console.log("response.status = " + response.status); // `status`는 서버 응답의 HTTP 상태 코드
           // console.log(response.statusText) // `statusText`는 서버 응답으로 부터의 HTTP 상태 메시지
           // console.log(response.headers) // headers` 서버가 응답 한 헤더는 모든 헤더 이름이 소문자로 제공
           // console.log(response.config) // `config`는 요청에 대해 `axios`에 설정된 구성(config)
@@ -186,9 +180,10 @@
         // 첫번째 parameter에는 axios에 전달할 서버의 url, 두번째 parameter에는 입력할 데이터가 들어간다.
         // 마찬가지로 세번째 parameter에는 선택적으로 config 객체를 추가할 수 있다.
         console.log("postData");
+        console.log("저장 id 번호 : " + Number(this.dataLength + 1));
         let saveData = {};
         saveData.userId = this.userIdValue;
-        saveData.id = this.idValue;
+        saveData.id = Number(this.dataLength + 1);
         saveData.title = this.titleValue;
         saveData.completed = this.completedValue;
         console.log(saveData);
@@ -197,7 +192,7 @@
           .then((res) => {
             console.log(res);
             console.log(res.data);
-            console.log(res.status);
+            console.log("response.status = " + res.status);
           })
           .catch((error) => {
             console.log(error);
@@ -213,7 +208,6 @@
         // 마찬가지로 세번째 parameter에는 선택적으로 config 객체를 추가할 수 있다.
         if(this.select != 0) {
           console.log("putData");
-  
           let number = this.select;
           let putData = {};
           putData.userId = this.userIdValue;
@@ -226,7 +220,7 @@
             .then((res) => {
               console.log(res);
               console.log(res.data);
-              console.log(res.status);
+              console.log("response.status = " + res.status);
             })
             .catch((error) => {
               console.log(error);
@@ -247,12 +241,12 @@
         console.log("deleteData");
         
         let deleteKey = this.select;
-        console.log("deleteKey" + deleteKey);
+        console.log("deleteKey = " + deleteKey);
         axios.delete(HOST + "/" + deleteKey)
           .then((res) => {
             console.log(res);
             console.log(res.data);
-            console.log(res.status);
+            console.log("response.status = " + res.status);
           })
           .catch((error) => {
             console.log(error);
