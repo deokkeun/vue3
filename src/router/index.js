@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Balmostory from '../views/BalmostoryView.vue';
 import Inputv from '../views/InputvView.vue';
 import Todos from '../views/TodosView.vue';
+import Board from '../views/BoardView.vue';
 import HomeView from '../views/HomeView.vue';
 import AboutViewCopy from '../views/AboutViewCopy.vue';
 
@@ -24,6 +25,11 @@ const routes = [
     path: '/Todos',
     name: 'Todos',
     component: Todos,
+  },
+  {
+    path: '/Board',
+    name: 'Board',
+    component: Board,
   },
   {
     path: '/Balmostory',
